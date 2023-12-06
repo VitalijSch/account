@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500;700&display=swap');
+
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+.styleContainer {
+    background-color: black;
+    background-image: url("../images/background.png");
+}
+
+.styleForm {
+    background-color: rgba(1, 32, 93, 0.6);
+    color: white;
+    border: 1px solid white;
+}
