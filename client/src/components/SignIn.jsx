@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Validation from "./validation/SignInValidation";
+import validate from "./validation/SignInValidation";
 
 const SignIn = () => {
     const [registeredData, setRegisteredData] = useState([]);
@@ -9,7 +9,7 @@ const SignIn = () => {
         password: "",
     });
     const [error, setError] = useState({});
-    const [showIncorrectLogin, setShowIncorretLogin] = useState(false);
+    const [showIncorrectLogin, setShowIncorrectLogin] = useState(false);
 
     useEffect(() => {
         const fetchRegisteredData = async () => {
@@ -31,43 +31,48 @@ const SignIn = () => {
         }));
     };
 
-    const login = (err) => {
-        if (err.email === "" && err.password === "") {
+    const isLoginDataValid = () => {
+        const err = validate(loginData);
+        setError(err);
+        return Object.values(err).every(value => value === "");
+    };
+
+    const handleLogin = () => {
+        if (isLoginDataValid()) {
             const foundData = registeredData.some(data => data.email === loginData.email && data.password === loginData.password);
             if (foundData) {
                 setLoginData({
                     email: "",
                     password: "",
-                })
-                return alert("Login erfolgreich");
+                });
+                alert("Login erfolgreich");
             } else {
                 showIncorrectLoginMessage();
             }
         }
-    }
+    };
 
     const showIncorrectLoginMessage = () => {
-        setShowIncorretLogin(true);
+        setShowIncorrectLogin(true);
         setTimeout(() => {
-            setShowIncorretLogin(false);
+            setShowIncorrectLogin(false);
         }, 4000);
-    }
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const err = Validation(loginData);
-        setError(err);
-        login(err);
-    }
-
+        handleLogin();
+    };
 
     return (
         <div className="vh-100 d-flex justify-content-center align-items-center styleContainer">
             <form onSubmit={handleSubmit} className="col-lg-4 col-md-5 col-sm-6 col-9 p-4 styleForm">
                 <h2>Einloggen</h2>
-                {
-                    showIncorrectLogin && <div className="alert alert-danger">Die Anmeldedaten sind nicht gültig. Bitte überprüfe deine E-Mail-Adresse und dein Passwort und versuche es erneut.</div>
-                }
+                {showIncorrectLogin && (
+                    <div className="alert alert-danger">
+                        Die Anmeldedaten sind nicht gültig. Bitte überprüfe deine E-Mail-Adresse und dein Passwort und versuche es erneut.
+                    </div>
+                )}
                 <div className="mb-4">
                     <label htmlFor="email"><strong>Email:</strong></label>
                     <input
@@ -100,9 +105,9 @@ const SignIn = () => {
                 <div className="mb-4">
                     <p>Noch kein Account? <a href="http://localhost:3000/signUp">Registrieren</a></p>
                 </div>
-            </form >
-        </div >
-    )
-}
+            </form>
+        </div>
+    );
+};
 
 export default SignIn;

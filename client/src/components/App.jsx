@@ -1,9 +1,10 @@
 import React from "react";
-import "../components/App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
+
 import SignIn from "./SignIn";
 import SignUp from "./SignUp";
+import "../components/App.css";
 
 const App = () => {
     return (

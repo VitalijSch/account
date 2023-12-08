@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import Validation from "./validation/SignUpValidation";
+import validate from "./validation/SignUpValidation";
 
 const SignUp = () => {
     const [inputData, setInputData] = useState({
@@ -13,8 +13,14 @@ const SignUp = () => {
     const [error, setError] = useState({});
     const navigate = useNavigate();
 
-    const registered = async (err) => {
-        if (err.firstName === "" && err.lastName === "" && err.email === "" && err.password === "") {
+    const isInputDataValid = () => {
+        const err = validate(inputData);
+        setError(err);
+        return Object.values(err).every(value => value === "");
+    };
+
+    const registerUser = async () => {
+        if (isInputDataValid()) {
             try {
                 await axios.post("http://localhost:3001/signUp", inputData);
                 setInputData({
@@ -22,27 +28,25 @@ const SignUp = () => {
                     lastName: "",
                     email: "",
                     password: "",
-                })
+                });
                 navigate("/");
             } catch (error) {
                 console.error("Error saving customer:", error);
             }
         }
-    }
+    };
 
     const handleChangeInput = (e) => {
         setInputData(prevData => ({
             ...prevData,
             [e.target.name]: e.target.value,
         }));
-    }
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const err = Validation(inputData);
-        setError(err);
-        registered(err);
-    }
+        registerUser();
+    };
 
     return (
         <div className="vh-100 d-flex justify-content-center align-items-center styleContainer">
